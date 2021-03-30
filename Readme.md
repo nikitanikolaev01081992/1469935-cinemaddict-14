@@ -1,7 +1,7 @@
 # Проект «Киноман»
 
-* Студент: [Nikita Nikolaev](https://up.htmlacademy.ru/ecmascript/14/user/1469935).
-* Наставник: `Неизвестно`.
+- Студент: [Nikita Nikolaev](https://up.htmlacademy.ru/ecmascript/14/user/1469935).
+- Наставник: [Даниил Царёв](https://htmlacademy.ru/profile/id945835).
 
 ---
 
