@@ -1,4 +1,4 @@
-export const getTotalFilmsComponent = () => {
+export const getTotalFilmsNumComponent = () => {
   return `<section class="footer__statistics">
     <p>130 291 movies inside</p>
   </section>`;

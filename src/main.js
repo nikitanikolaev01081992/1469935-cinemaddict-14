@@ -6,7 +6,7 @@ import { getSortComponent } from './view/sort.js';
 import { getFilmsListComponent } from './view/filmsList.js';
 import { getShowMoreComponent } from './view/showMoreButton';
 import { getFilmDetailsComponent } from './view/filmDetails.js';
-import { getTotalFilmsComponent } from './view/totalFilms.js';
+import { getTotalFilmsNumComponent } from './view/totalFilmsNum.js';
 
 // ---------------------------------------------------------
 // CONSTANTS
@@ -42,7 +42,7 @@ render(FILMS_NODE, getFilmsListComponent(true, 'TOP_RATED'), 'beforeend');
 render(FILMS_NODE, getFilmsListComponent(true, 'MOST_COMMENTED'), 'beforeend');
 
 // общее количество фильмов
-render(FOOTER_NODE, getTotalFilmsComponent(), 'beforeend');
+render(FOOTER_NODE, getTotalFilmsNumComponent(), 'beforeend');
 
 // детальная информация о фильме
 render(FOOTER_NODE, getFilmDetailsComponent(), 'afterend');
