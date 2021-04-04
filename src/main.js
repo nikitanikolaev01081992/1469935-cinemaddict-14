@@ -20,7 +20,7 @@ const FOOTER_NODE = getNode('.footer');
 // отрисовка компонентов
 
 // рейтинг пользователя
-render(HEADER_NODE, getRatingComponent(), 'beforeend');
+render(HEADER_NODE, getRatingComponent());
 
 // сортировка
 render(MAIN_NODE, getSortComponent(), 'afterbegin');
@@ -30,19 +30,19 @@ render(MAIN_NODE, getStatsComponent(), 'afterbegin');
 render(MAIN_NODE, getMenuComponent(), 'afterbegin');
 
 // список фильмов
-render(FILMS_NODE, getFilmsListComponent(), 'beforeend');
+render(FILMS_NODE, getFilmsListComponent());
 
 const filmsList = getNode('.films-list', MAIN_NODE);
-render(filmsList, getShowMoreComponent(), 'beforeend');
+render(filmsList, getShowMoreComponent());
 
 // список фильмов top rated
-render(FILMS_NODE, getFilmsListComponent(true, 'TOP_RATED'), 'beforeend');
+render(FILMS_NODE, getFilmsListComponent(true, 'TOP_RATED'));
 
 // список фильмов most commented
-render(FILMS_NODE, getFilmsListComponent(true, 'MOST_COMMENTED'), 'beforeend');
+render(FILMS_NODE, getFilmsListComponent(true, 'MOST_COMMENTED'));
 
 // общее количество фильмов
-render(FOOTER_NODE, getTotalFilmsNumComponent(), 'beforeend');
+render(FOOTER_NODE, getTotalFilmsNumComponent());
 
 // детальная информация о фильме
 render(FOOTER_NODE, getFilmDetailsComponent(), 'afterend');

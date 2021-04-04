@@ -17,7 +17,7 @@ const getNode = (selector, parent = document) => {
 // ---------------------------------------------------------
 // функция отрисовывает htmlString в container на месте elementPlace
 // {string} elementPlace один из [beforebegin, afterbegin, beforeend, afterend]
-const render = (container, htmlString, elementPlace) => {
+const render = (container, htmlString, elementPlace = 'beforeend') => {
   container.insertAdjacentHTML(elementPlace, htmlString);
 };
 

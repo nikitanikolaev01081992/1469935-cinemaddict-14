@@ -1,7 +1,7 @@
-import { CSS_HIDE_CLASS } from '../constants';
+import { CSS_HIDDEN_CLASS } from '../constants';
 
 export const getFilmDetailsComponent = () => {
-  return `<section class="film-details ${CSS_HIDE_CLASS}">
+  return `<section class="film-details ${CSS_HIDDEN_CLASS}">
     <form class="film-details__inner" action="" method="get">
       <div class="film-details__top-container">
         <div class="film-details__close">

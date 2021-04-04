@@ -1,8 +1,8 @@
-import { CSS_HIDE_CLASS } from '../constants';
+import { CSS_HIDDEN_CLASS } from '../constants';
 
 export const getStatsComponent = () => {
   return `
-  <section class="statistic ${CSS_HIDE_CLASS}">
+  <section class="statistic ${CSS_HIDDEN_CLASS}">
     <p class="statistic__rank">
       Your rank
       <img class="statistic__img" src="images/bitmap@2x.png" alt="Avatar" width="35" height="35">
