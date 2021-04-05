@@ -15,6 +15,7 @@ const HEADER_NODE = getNode('.header');
 const MAIN_NODE = getNode('.main');
 const FILMS_NODE = getNode('.films');
 const FOOTER_NODE = getNode('.footer');
+const FOOTER__STATISTICS = getNode('.footer__statistics');
 
 // ---------------------------------------------------------
 // отрисовка компонентов
@@ -42,7 +43,7 @@ render(FILMS_NODE, getFilmsListComponent(true, 'TOP_RATED'));
 render(FILMS_NODE, getFilmsListComponent(true, 'MOST_COMMENTED'));
 
 // общее количество фильмов
-render(FOOTER_NODE, getTotalFilmsNumComponent());
+render(FOOTER__STATISTICS, getTotalFilmsNumComponent());
 
 // детальная информация о фильме
 render(FOOTER_NODE, getFilmDetailsComponent(), 'afterend');
