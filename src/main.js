@@ -9,41 +9,40 @@ import { getFilmDetailsComponent } from './view/filmDetails.js';
 import { getTotalFilmsNumComponent } from './view/totalFilmsNum.js';
 
 // ---------------------------------------------------------
-// CONSTANTS
-
-const HEADER_NODE = getNode('.header');
-const MAIN_NODE = getNode('.main');
-const FILMS_NODE = getNode('.films');
-const FOOTER_NODE = getNode('.footer');
-const FOOTER__STATISTICS = getNode('.footer__statistics');
+// DOM elements
+const headerNode = getNode('.header');
+const mainNode = getNode('.main');
+const filmsNode = getNode('.films');
+const footerNode = getNode('.footer');
+const footerStatsNode = getNode('.footer__statistics');
 
 // ---------------------------------------------------------
 // отрисовка компонентов
 
 // рейтинг пользователя
-render(HEADER_NODE, getRatingComponent());
+render(headerNode, getRatingComponent());
 
 // сортировка
-render(MAIN_NODE, getSortComponent(), 'afterbegin');
+render(mainNode, getSortComponent(), 'afterbegin');
 
 // статистика пользователя
-render(MAIN_NODE, getStatsComponent(), 'afterbegin');
-render(MAIN_NODE, getMenuComponent(), 'afterbegin');
+render(mainNode, getStatsComponent(), 'afterbegin');
+render(mainNode, getMenuComponent(), 'afterbegin');
 
 // список фильмов
-render(FILMS_NODE, getFilmsListComponent());
+render(filmsNode, getFilmsListComponent());
 
-const filmsList = getNode('.films-list', MAIN_NODE);
+const filmsList = getNode('.films-list', mainNode);
 render(filmsList, getShowMoreComponent());
 
 // список фильмов top rated
-render(FILMS_NODE, getFilmsListComponent(true, 'TOP_RATED'));
+render(filmsNode, getFilmsListComponent(true, 'TOP_RATED'));
 
 // список фильмов most commented
-render(FILMS_NODE, getFilmsListComponent(true, 'MOST_COMMENTED'));
+render(filmsNode, getFilmsListComponent(true, 'MOST_COMMENTED'));
 
 // общее количество фильмов
-render(FOOTER__STATISTICS, getTotalFilmsNumComponent());
+render(footerStatsNode, getTotalFilmsNumComponent());
 
 // детальная информация о фильме
-render(FOOTER_NODE, getFilmDetailsComponent(), 'afterend');
+render(footerNode, getFilmDetailsComponent(), 'afterend');
