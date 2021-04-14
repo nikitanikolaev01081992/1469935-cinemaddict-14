@@ -1,13 +1,26 @@
-import { CSS_HIDDEN_CLASS } from '../constants';
+import { capitalizeFirstLetter } from '../util.js';
 
-export const getStatsComponent = () => {
+const getRankStats = (rank = '') => {
+  if (rank === '') {
+    return '';
+  }
+
   return `
-  <section class="statistic ${CSS_HIDDEN_CLASS}">
     <p class="statistic__rank">
       Your rank
       <img class="statistic__img" src="images/bitmap@2x.png" alt="Avatar" width="35" height="35">
-      <span class="statistic__rank-label">Movie buff</span>
+      <span class="statistic__rank-label">${capitalizeFirstLetter(rank)}</span>
     </p>
+  `;
+};
+
+export const getStatsComponent = (stats) => {
+  const { rank, watchedNumber, totalDuration, topGenre } = stats;
+
+  return `
+  <section class="statistic">
+
+    ${getRankStats(rank)}
 
     <form action="https://echo.htmlacademy.ru/" method="get" class="statistic__filters">
       <p class="statistic__filters-description">Show stats:</p>
@@ -31,15 +44,18 @@ export const getStatsComponent = () => {
     <ul class="statistic__text-list">
       <li class="statistic__text-item">
         <h4 class="statistic__item-title">You watched</h4>
-        <p class="statistic__item-text">22 <span class="statistic__item-description">movies</span></p>
+        <p class="statistic__item-text">${watchedNumber} <span class="statistic__item-description">movies</span></p>
       </li>
       <li class="statistic__text-item">
         <h4 class="statistic__item-title">Total duration</h4>
-        <p class="statistic__item-text">130 <span class="statistic__item-description">h</span> 22 <span class="statistic__item-description">m</span></p>
+        <p class="statistic__item-text">
+          ${totalDuration.hours} <span class="statistic__item-description">h</span>
+          ${totalDuration.minutes} <span class="statistic__item-description">m</span>
+        </p>
       </li>
       <li class="statistic__text-item">
         <h4 class="statistic__item-title">Top genre</h4>
-        <p class="statistic__item-text">Sci-Fi</p>
+        <p class="statistic__item-text">${topGenre}</p>
       </li>
     </ul>
 
