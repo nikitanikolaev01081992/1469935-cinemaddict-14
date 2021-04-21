@@ -1,7 +1,7 @@
 import { createElementFromTemplate } from '../util.js';
 
 // ---------------------------------------------------------
-export const getTotalFilmsNumTemplate = (num) => {
+const getTotalFilmsNumTemplate = (num) => {
   return `
     <p>${num} movies inside</p>
   `;
