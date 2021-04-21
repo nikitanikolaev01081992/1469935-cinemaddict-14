@@ -1,6 +1,7 @@
-import { capitalizeFirstLetter } from '../util.js';
+import { createElementFromTemplate, capitalizeFirstLetter } from '../util.js';
 
-export const getFilmCardComponent = (data) => {
+// ---------------------------------------------------------
+export const getFilmCardTemplate = (data) => {
   const { filmId, poster, name, rating, year, duration, genres, shortDescription, commentNumber } = data;
 
   return `<article class="film-card" data-film-id=${filmId}>
@@ -21,3 +22,26 @@ export const getFilmCardComponent = (data) => {
     </div>
   </article>`;
 };
+
+// ---------------------------------------------------------
+export default class FilmCard {
+  constructor(data) {
+    this._data = data;
+  }
+
+  getTemplate() {
+    return getFilmCardTemplate(this._data);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElementFromTemplate(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}

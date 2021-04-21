@@ -1,6 +1,13 @@
 import { MINUTES_IN_HOUR } from './constants.js';
 
-//-----------------------------------------------------------------------
+// -----------------------------------------------------------------------
+// CONSTANTS/ENUMS
+const RenderPosition = {
+  AFTER_BEGIN: 'afterbegin',
+  BEFORE_END: 'beforeend',
+};
+
+// -----------------------------------------------------------------------
 const getRandomInt = (min, max) => {
   if (isNaN(min) || isNaN(min) || min < 0 || max < 0) {
     throw new Error('getRandomInt: Неверные входные параметры');
@@ -12,7 +19,7 @@ const getRandomInt = (min, max) => {
   return Math.floor(randValue * (localMax - localMin + 1) + localMin);
 };
 
-//-----------------------------------------------------------------------
+// -----------------------------------------------------------------------
 const getRandomFloat = (min, max, precision = 2) => {
   if (isNaN(precision) || precision < 0) {
     throw new Error('getRandomFloat: Неверные входные параметры');
@@ -23,7 +30,7 @@ const getRandomFloat = (min, max, precision = 2) => {
   return getRandomInt(min * multiplier, max * multiplier) / multiplier;
 };
 
-//-----------------------------------------------------------------------
+// -----------------------------------------------------------------------
 // function returns random value from array
 const getRandElemFromArray = (elements) => {
   if (!Array.isArray(elements) || elements.length === 0) {
@@ -33,7 +40,7 @@ const getRandElemFromArray = (elements) => {
   return elements[getRandomInt(0, elements.length - 1)];
 };
 
-//-----------------------------------------------------------------------
+// -----------------------------------------------------------------------
 // function returns array of random length with unique values
 const getRandArrayFromValues = (values, allowZeroLength = false) => {
   if (!Array.isArray(values)) {
@@ -95,10 +102,23 @@ const sortArrayOfObjects = (array, property) => {
 };
 
 // ---------------------------------------------------------
-// функция отрисовывает htmlString в container на месте elementPlace
-// {string} elementPlace один из [beforebegin, afterbegin, beforeend, afterend]
-const render = (container, htmlString, elementPlace = 'beforeend') => {
-  container.insertAdjacentHTML(elementPlace, htmlString);
+// функция вставляет element в container на место elementPlace
+// {string} elementPlace один из [afterbegin, beforeend]
+const renderElement = (container, element, elementPlace = RenderPosition.BEFORE_END) => {
+  if (elementPlace === RenderPosition.AFTER_BEGIN) {
+    container.prepend(element);
+  } else if (elementPlace === RenderPosition.BEFORE_END) {
+    container.append(element);
+  }
+};
+
+// ---------------------------------------------------------
+// функция создаёт и возвращает новый DOM элемент на основе переданной разметки
+const createElementFromTemplate = (template) => {
+  const wrapper = document.createElement('div');
+  wrapper.innerHTML = template;
+
+  return wrapper.firstElementChild;
 };
 
 // ---------------------------------------------------------
@@ -110,6 +130,7 @@ const capitalizeFirstLetter = (text) => text[0].toUpperCase() + text.slice(1);
 
 // prettier-ignore
 export {
+  RenderPosition,
   getRandomInt,
   getRandomFloat,
   getRandElemFromArray,
@@ -117,7 +138,8 @@ export {
   getNode,
   getNodes,
   getRandomDuration,
-  render,
+  renderElement,
+  createElementFromTemplate,
   capitalizeFirstLetter,
   sortArrayOfObjects
 };
