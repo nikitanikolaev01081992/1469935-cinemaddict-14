@@ -1,11 +1,11 @@
-import { capitalizeFirstLetter } from '../util.js';
-import { getCommentComponent } from './comment.js';
+import { createElementFromTemplate, capitalizeFirstLetter, getNode } from '../util.js';
+import CommentView from './comment.js';
 
-const getGenreComponent = (genre) => {
+const getGenreTemplate = (genre) => {
   return `<span class="film-details__genre">${genre}</span>`;
 };
 
-export const getFilmDetailsComponent = (data) => {
+export const getFilmDetailsTemplate = (data) => {
   const {
     filmId,
     poster,
@@ -22,7 +22,6 @@ export const getFilmDetailsComponent = (data) => {
     genres,
     fullDescription,
     commentNumber,
-    comments,
   } = data;
 
   return `<section class="film-details" data-film-id="${filmId}">
@@ -78,7 +77,7 @@ export const getFilmDetailsComponent = (data) => {
               <tr class="film-details__row">
                 <td class="film-details__term">Genre${genres.length > 1 ? 's' : ''}</td>
                 <td class="film-details__cell">
-                  ${genres.map(getGenreComponent).join('')}
+                  ${genres.map(getGenreTemplate).join('')}
                 </td>
               </tr>
             </table>
@@ -106,7 +105,6 @@ export const getFilmDetailsComponent = (data) => {
           <h3 class="film-details__comments-title">Comments <span class="film-details__comments-count">${commentNumber}</span></h3>
 
           <ul class="film-details__comments-list">
-            ${comments.map(getCommentComponent).join('')}
           </ul>
 
           <div class="film-details__new-comment">
@@ -143,3 +141,32 @@ export const getFilmDetailsComponent = (data) => {
     </form>
   </section>`;
 };
+
+// ---------------------------------------------------------
+export default class FilmDetails {
+  constructor(data) {
+    this._data = data;
+  }
+
+  getTemplate() {
+    return getFilmDetailsTemplate(this._data);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElementFromTemplate(this.getTemplate());
+
+      const commentList = getNode('.film-details__comments-list', this._element);
+      this._data.comments.forEach((comment) => {
+        commentList.append(new CommentView(comment).getElement());
+      });
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element.remove();
+    this._element = null;
+  }
+}

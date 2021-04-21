@@ -1,16 +1,40 @@
-import { capitalizeFirstLetter } from '../util.js';
+import { createElementFromTemplate, getNode } from '../util.js';
+import FilterView from './filter.js';
 
-const getFilterComponent = ({ filterName, count }) => {
-  return `<a href="#watchlist" class="main-navigation__item">
-    ${capitalizeFirstLetter(filterName)} <span class="main-navigation__item-count">${count}</span></a>`;
-};
-
-export const getMenuComponent = (filters) => {
+// ---------------------------------------------------------
+export const getMenuTemplate = () => {
   return `<nav class="main-navigation">
   <div class="main-navigation__items">
     <a href="#all" class="main-navigation__item main-navigation__item--active">All movies</a>
-    ${filters.map(getFilterComponent).join('')}
   </div>
   <a href="#stats" class="main-navigation__additional">Stats</a>
 </nav>`;
 };
+
+// ---------------------------------------------------------
+export default class Menu {
+  constructor(filters) {
+    this._filters = filters;
+  }
+
+  getTemplate() {
+    return getMenuTemplate();
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElementFromTemplate(this.getTemplate());
+
+      this.filtersContainer = getNode('.main-navigation__items', this._element);
+      this._filters.forEach((filterData) => {
+        this.filtersContainer.append(new FilterView(filterData).getElement());
+      });
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}

@@ -1,4 +1,7 @@
-export const getCommentComponent = (data) => {
+import { createElementFromTemplate } from '../util.js';
+
+// ---------------------------------------------------------
+export const getCommentTemplate = (data) => {
   const { text, emotion, author, date } = data;
   return `
   <li class="film-details__comment">
@@ -15,3 +18,26 @@ export const getCommentComponent = (data) => {
     </div>
   </li>`;
 };
+
+// ---------------------------------------------------------
+export default class Comment {
+  constructor(data) {
+    this._data = data;
+  }
+
+  getTemplate() {
+    return getCommentTemplate(this._data);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElementFromTemplate(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}

@@ -1,13 +1,10 @@
+import { createElementFromTemplate, getNode } from '../util.js';
 import { FilmListTitle, CSS_HIDDEN_CLASS } from '../constants.js';
-import { getFilmCardComponent } from '../view/filmCard.js';
+import FilmCardView from './filmCard.js';
 
 // ---------------------------------------------------------
-
-// ---------------------------------------------------------
-export const getFilmsListComponent = (filmsData = [], extra = false, listType = 'DEFAULT') => {
+export const getFilmsListTemplate = (filmsNumber = 0, extra = false, listType = 'DEFAULT') => {
   const extraClass = extra ? 'films-list--extra' : '';
-
-  const films = filmsData.length > 0 ? filmsData.map(getFilmCardComponent).join('') : 'There are no movies in our database';
 
   return `<section class="films-list ${extraClass}">
     <h2 class="films-list__title ${listType === 'DEFAULT' ? CSS_HIDDEN_CLASS : ''}">
@@ -15,8 +12,38 @@ export const getFilmsListComponent = (filmsData = [], extra = false, listType = 
     </h2>
 
     <div class="films-list__container">
-      ${films}
+      ${filmsNumber === 0 ? 'There are no movies in our database' : ''}
     </div>
 
   </section>`;
 };
+
+// ---------------------------------------------------------
+export default class FilmList {
+  constructor(filmsData, extra, listType) {
+    this._filmsData = filmsData;
+    this._extra = extra;
+    this._listType = listType;
+  }
+
+  getTemplate() {
+    return getFilmsListTemplate(this._filmsData.length, this._extra, this._listType);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElementFromTemplate(this.getTemplate());
+
+      this.filmsContainer = getNode('.films-list__container', this._element);
+      this._filmsData.forEach((filmData) => {
+        this.filmsContainer.append(new FilmCardView(filmData).getElement());
+      });
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}

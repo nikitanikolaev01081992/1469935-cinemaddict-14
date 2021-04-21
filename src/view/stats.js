@@ -1,5 +1,6 @@
-import { capitalizeFirstLetter } from '../util.js';
+import { createElementFromTemplate, capitalizeFirstLetter } from '../util.js';
 
+// ---------------------------------------------------------
 const getRankStats = (rank = '') => {
   if (rank === '') {
     return '';
@@ -14,7 +15,7 @@ const getRankStats = (rank = '') => {
   `;
 };
 
-export const getStatsComponent = (stats) => {
+export const getStatsTemplate = (stats) => {
   const { rank, watchedNumber, totalDuration, topGenre } = stats;
 
   return `
@@ -66,3 +67,26 @@ export const getStatsComponent = (stats) => {
   </section>
   `;
 };
+
+// ---------------------------------------------------------
+export default class Stats {
+  constructor(stats) {
+    this._stats = stats;
+  }
+
+  getTemplate() {
+    return getStatsTemplate(this._stats);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElementFromTemplate(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}
