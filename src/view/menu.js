@@ -1,5 +1,4 @@
-import { createElementFromTemplate, getNode } from '../util.js';
-import FilterView from './filter.js';
+import { createElementFromTemplate } from '../util.js';
 
 // ---------------------------------------------------------
 export const getMenuTemplate = () => {
@@ -13,9 +12,7 @@ export const getMenuTemplate = () => {
 
 // ---------------------------------------------------------
 export default class Menu {
-  constructor(filters) {
-    this._filters = filters;
-  }
+  constructor() {}
 
   getTemplate() {
     return getMenuTemplate();
@@ -24,11 +21,6 @@ export default class Menu {
   getElement() {
     if (!this._element) {
       this._element = createElementFromTemplate(this.getTemplate());
-
-      this.filtersContainer = getNode('.main-navigation__items', this._element);
-      this._filters.forEach((filterData) => {
-        this.filtersContainer.append(new FilterView(filterData).getElement());
-      });
     }
 
     return this._element;

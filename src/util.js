@@ -113,6 +113,18 @@ const renderElement = (container, element, elementPlace = RenderPosition.BEFORE_
 };
 
 // ---------------------------------------------------------
+// функция вставляет elements в конец container
+const renderElements = (container, elements) => {
+  const documentFragment = document.createDocumentFragment();
+
+  elements.forEach((element) => {
+    documentFragment.append(element);
+  });
+
+  renderElement(container, documentFragment);
+};
+
+// ---------------------------------------------------------
 // функция создаёт и возвращает новый DOM элемент на основе переданной разметки
 const createElementFromTemplate = (template) => {
   const wrapper = document.createElement('div');
@@ -139,6 +151,7 @@ export {
   getNodes,
   getRandomDuration,
   renderElement,
+  renderElements,
   createElementFromTemplate,
   capitalizeFirstLetter,
   sortArrayOfObjects

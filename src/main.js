@@ -1,10 +1,12 @@
-import { CSS_HIDE_OVERFLOW_CLASS } from './constants.js';
-import { RenderPosition, getNode, renderElement, sortArrayOfObjects } from './util.js';
+import { CSS_HIDE_OVERFLOW_CLASS, CSS_FILMS_CONTAINER_CLASS } from './constants.js';
+import { RenderPosition, getNode, renderElement, renderElements, sortArrayOfObjects } from './util.js';
 import RatingView from './view/rating.js';
 import MenuView from './view/menu.js';
+import FilterView from './view/filter.js';
 // import StatsView from './view/stats.js';
 import SortsView from './view/sort.js';
 import FilmListView from './view/filmsList.js';
+import EmptyFilmListView from './view/emptyFilmList.js';
 import FilmCardView from './view/filmCard.js';
 import ShowMoreView from './view/showMoreButton';
 import FilmDetailsView from './view/filmDetails.js';
@@ -27,8 +29,8 @@ const MOST_COMMENTED_MAX = 2;
 // Data
 const filmsData = new Array(FILM_COUNT).fill().map((_, index) => generateFilm(index + 1));
 
-// Filters in menu
-const filters = generateFilters(filmsData);
+// Data for filters in menu
+const filtersData = generateFilters(filmsData);
 
 // UserStatistic
 const userStats = generateUserStats();
@@ -51,7 +53,13 @@ renderElement(headerNode, new RatingView(userStats.rank).getElement());
 renderElement(mainNode, new SortsView().getElement(), RenderPosition.AFTER_BEGIN);
 
 // меню с фильтрами
-renderElement(mainNode, new MenuView(filters).getElement(), RenderPosition.AFTER_BEGIN);
+const menuComponent = new MenuView();
+renderElement(mainNode, menuComponent.getElement(), RenderPosition.AFTER_BEGIN);
+
+// фильтры в меню
+const filtersContainer = getNode('.main-navigation__items');
+const filters = filtersData.map((filterData) => new FilterView(filterData).getElement());
+renderElements(filtersContainer, filters);
 
 // общее количество фильмов
 renderElement(footerStatsNode, new TotalFilmsNumView().getElement());
@@ -61,27 +69,52 @@ renderElement(footerStatsNode, new TotalFilmsNumView().getElement());
 
 // ---------------------------------------------------------
 // список фильмов
-const allFilmListComponent = new FilmListView(filmsData.slice(0, FILM_COUNT_PER_STEP));
-renderElement(filmsNode, allFilmListComponent.getElement());
+let allFilmListComponent;
+let allFilmsContainer;
+
+if (filmsData.length > 0) {
+  allFilmListComponent = new FilmListView();
+  renderElement(filmsNode, allFilmListComponent.getElement());
+
+  // рендер фильмов в списке
+  allFilmsContainer = getNode(`.${CSS_FILMS_CONTAINER_CLASS}`, allFilmListComponent.getElement());
+  const films = filmsData.slice(0, FILM_COUNT_PER_STEP).map((filmData) => new FilmCardView(filmData).getElement());
+
+  renderElements(allFilmsContainer, films);
+} else {
+  renderElement(filmsNode, new EmptyFilmListView().getElement());
+}
 
 // список фильмов top rated
 let topRatedListComponent;
 
 if (filmsData.length > 0) {
-  const topRatedFilms = sortArrayOfObjects(filmsData, 'rating').slice(0, TOP_RATED_MAX);
-  topRatedListComponent = new FilmListView(topRatedFilms, true, 'TOP_RATED');
-
+  topRatedListComponent = new FilmListView(true, 'TOP_RATED');
   renderElement(filmsNode, topRatedListComponent.getElement());
+
+  // рендер фильмов в списке
+  const topFilmsContainer = getNode(`.${CSS_FILMS_CONTAINER_CLASS}`, topRatedListComponent.getElement());
+  const topRatedFilms = sortArrayOfObjects(filmsData, 'rating')
+    .slice(0, TOP_RATED_MAX)
+    .map((filmData) => new FilmCardView(filmData).getElement());
+
+  renderElements(topFilmsContainer, topRatedFilms);
 }
 
 // список фильмов most commented
 let mostCommentedListComponent;
 
 if (filmsData.length > 0) {
-  const mostCommentedFilms = sortArrayOfObjects(filmsData, 'commentNumber').slice(0, MOST_COMMENTED_MAX);
-  mostCommentedListComponent = new FilmListView(mostCommentedFilms, true, 'MOST_COMMENTED');
-
+  mostCommentedListComponent = new FilmListView(true, 'MOST_COMMENTED');
   renderElement(filmsNode, mostCommentedListComponent.getElement());
+
+  // рендер фильмов в списке
+  const mostCommentedFilmsContainer = getNode(`.${CSS_FILMS_CONTAINER_CLASS}`, mostCommentedListComponent.getElement());
+  const mostCommentedFilms = sortArrayOfObjects(filmsData, 'commentNumber')
+    .slice(0, MOST_COMMENTED_MAX)
+    .map((filmData) => new FilmCardView(filmData).getElement());
+
+  renderElements(mostCommentedFilmsContainer, mostCommentedFilms);
 }
 
 // ---------------------------------------------------------
@@ -138,6 +171,7 @@ const onFilmListClick = (evt) => {
   document.addEventListener('keydown', onEscKeyDown);
 };
 
+// навешиваем обработки на списки фильмов
 [allFilmListComponent, topRatedListComponent, mostCommentedListComponent].forEach((fimlListComponent) => {
   if (fimlListComponent) {
     fimlListComponent.getElement().addEventListener('click', onFilmListClick);
@@ -156,13 +190,17 @@ if (filmsData.length > FILM_COUNT_PER_STEP) {
   const onShowMoreClick = (evt) => {
     evt.preventDefault();
 
-    const filmListContainer = getNode('.films-list__container', allFilmListComponent.getElement());
+    // рендер ешё группы фильмов в списке
+    const films = filmsData
+      .slice(renderElementedFilmsCount, renderElementedFilmsCount + FILM_COUNT_PER_STEP)
+      .map((filmData) => new FilmCardView(filmData).getElement());
 
-    filmsData.slice(renderElementedFilmsCount, renderElementedFilmsCount + FILM_COUNT_PER_STEP).forEach((filmData) => {
-      renderElement(filmListContainer, new FilmCardView(filmData).getElement());
-    });
+    renderElements(allFilmsContainer, films);
+
+    // увеличиваем число уже отрендеренных фильмов
     renderElementedFilmsCount += FILM_COUNT_PER_STEP;
 
+    // если больше нечего рендерить, то убираем хендлеры и удаляем кнопку 'Show-more'
     if (renderElementedFilmsCount >= filmsData.length) {
       showMoreButton.removeEventListener('click', onShowMoreClick);
 

@@ -3,6 +3,8 @@ const CSS_HIDDEN_CLASS = 'visually-hidden';
 
 const CSS_HIDE_OVERFLOW_CLASS = 'hide-overflow';
 
+const CSS_FILMS_CONTAINER_CLASS = 'films-list__container';
+
 // минуты в часе
 const MINUTES_IN_HOUR = 60;
 
@@ -17,4 +19,4 @@ const FilmListTitle = {
 
 // ---------------------------------------------------------
 // EXPORTS
-export { CSS_HIDDEN_CLASS, CSS_HIDE_OVERFLOW_CLASS, FilmListTitle, MINUTES_IN_HOUR, GENRES };
+export { CSS_HIDDEN_CLASS, CSS_HIDE_OVERFLOW_CLASS, CSS_FILMS_CONTAINER_CLASS, FilmListTitle, MINUTES_IN_HOUR, GENRES };

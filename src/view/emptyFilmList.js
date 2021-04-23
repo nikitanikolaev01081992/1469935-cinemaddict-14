@@ -1,20 +1,23 @@
 import { createElementFromTemplate } from '../util.js';
 
 // ---------------------------------------------------------
-const getTotalFilmsNumTemplate = (num) => {
-  return `
-    <p>${num} movies inside</p>
-  `;
+export const getFilmsListTemplate = () => {
+  return `<section class="films-list">
+    <div class="films-list__container">
+      There are no movies in our database
+    </div>
+
+  </section>`;
 };
 
 // ---------------------------------------------------------
-export default class TotalFilmsNum {
-  constructor(num = 0) {
-    this._num = num;
+export default class EmptyFilmList {
+  constructor() {
+    this._element = null;
   }
 
   getTemplate() {
-    return getTotalFilmsNumTemplate(this._num);
+    return getFilmsListTemplate();
   }
 
   getElement() {
