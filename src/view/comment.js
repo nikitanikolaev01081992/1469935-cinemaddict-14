@@ -1,4 +1,4 @@
-import { createElementFromTemplate } from '../util.js';
+import ComponentView from './abstract-component.js';
 
 // ---------------------------------------------------------
 export const getCommentTemplate = (data) => {
@@ -20,24 +20,13 @@ export const getCommentTemplate = (data) => {
 };
 
 // ---------------------------------------------------------
-export default class Comment {
+export default class Comment extends ComponentView {
   constructor(data) {
+    super();
     this._data = data;
   }
 
   getTemplate() {
     return getCommentTemplate(this._data);
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElementFromTemplate(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }

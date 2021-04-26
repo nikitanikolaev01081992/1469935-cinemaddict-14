@@ -1,4 +1,4 @@
-import { createElementFromTemplate } from '../util.js';
+import ComponentView from './abstract-component.js';
 
 // ---------------------------------------------------------
 export const getMenuTemplate = () => {
@@ -11,22 +11,8 @@ export const getMenuTemplate = () => {
 };
 
 // ---------------------------------------------------------
-export default class Menu {
-  constructor() {}
-
+export default class Menu extends ComponentView {
   getTemplate() {
     return getMenuTemplate();
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElementFromTemplate(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }

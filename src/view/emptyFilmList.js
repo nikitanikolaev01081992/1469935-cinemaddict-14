@@ -1,4 +1,4 @@
-import { createElementFromTemplate } from '../util.js';
+import ComponentView from './abstract-component.js';
 
 // ---------------------------------------------------------
 export const getFilmsListTemplate = () => {
@@ -11,24 +11,8 @@ export const getFilmsListTemplate = () => {
 };
 
 // ---------------------------------------------------------
-export default class EmptyFilmList {
-  constructor() {
-    this._element = null;
-  }
-
+export default class EmptyFilmList extends ComponentView {
   getTemplate() {
     return getFilmsListTemplate();
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElementFromTemplate(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }

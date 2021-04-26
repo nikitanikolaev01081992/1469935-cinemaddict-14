@@ -1,4 +1,4 @@
-import { createElementFromTemplate } from '../util.js';
+import ComponentView from './abstract-component.js';
 
 // ---------------------------------------------------------
 export const getSortTemplate = () => {
@@ -10,20 +10,8 @@ export const getSortTemplate = () => {
 };
 
 // ---------------------------------------------------------
-export default class Sorts {
+export default class Sorts extends ComponentView {
   getTemplate() {
     return getSortTemplate();
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElementFromTemplate(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }

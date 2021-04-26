@@ -1,4 +1,4 @@
-import { getRandomInt, getRandElemFromArray } from '../util.js';
+import { getRandomInt, getRandElemFromArray } from '../utils/random.js';
 
 // ---------------------------------------------------------
 // CONSTANTS/ENUMS

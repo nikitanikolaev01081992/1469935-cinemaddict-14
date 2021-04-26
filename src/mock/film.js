@@ -5,7 +5,7 @@ import {
   getRandElemFromArray,
   getRandArrayFromValues,
   getRandomDuration
-} from '../util.js';
+} from '../utils/random.js';
 
 import { GENRES } from '../constants.js';
 
@@ -40,14 +40,7 @@ const DESCRIPTIONS = [
 const AGE_LIMITS = ['0+', '6+', '12+', '16+', '18+'];
 
 // режиссёры
-const DIRECTORS = [
-  'David Lynch',
-  'Martin Scorsese',
-  'Joel and Ethan Coen',
-  'Steven Soderbergh',
-  'Terrence Malick',
-  'Quentin Tarantino',
-];
+const DIRECTORS = ['David Lynch', 'Martin Scorsese', 'Joel and Ethan Coen', 'Steven Soderbergh', 'Terrence Malick', 'Quentin Tarantino'];
 
 // сценаристы
 const SCREENWRITES = ['Billy Wilder', 'Robert Towne', 'Quentin Tarantino', 'Francis Ford Coppola', 'William Goldman'];
@@ -68,20 +61,7 @@ const ACTORS = [
   'Julia Roberts',
 ];
 
-const MONTHS = [
-  'January',
-  'February',
-  'March',
-  'April',
-  'May',
-  'June',
-  'July',
-  'August',
-  'September',
-  'October',
-  'November',
-  'December',
-];
+const MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
 
 const COUNTRIES = [
   'Afghanistan',

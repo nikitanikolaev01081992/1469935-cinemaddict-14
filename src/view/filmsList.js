@@ -1,4 +1,4 @@
-import { createElementFromTemplate } from '../util.js';
+import ComponentView from './abstract-component.js';
 import { FilmListTitle, CSS_HIDDEN_CLASS } from '../constants.js';
 
 // ---------------------------------------------------------
@@ -17,25 +17,26 @@ export const getFilmsListTemplate = (extra = false, listType = 'DEFAULT') => {
 };
 
 // ---------------------------------------------------------
-export default class FilmList {
+export default class FilmList extends ComponentView {
   constructor(extra, listType) {
+    super();
     this._extra = extra;
     this._listType = listType;
+    this._callback = {};
+
+    this._clickHandler = this._clickHandler.bind(this);
   }
 
   getTemplate() {
     return getFilmsListTemplate(this._extra, this._listType);
   }
 
-  getElement() {
-    if (!this._element) {
-      this._element = createElementFromTemplate(this.getTemplate());
-    }
-
-    return this._element;
+  _clickHandler(evt) {
+    this._callback.click(evt);
   }
 
-  removeElement() {
-    this._element = null;
+  setClickHandler(callback) {
+    this._callback.click = callback;
+    this.getElement().addEventListener('click', this._clickHandler);
   }
 }
