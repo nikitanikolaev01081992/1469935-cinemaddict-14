@@ -1,4 +1,4 @@
-import { getRandomInt, getRandElemFromArray, getRandomDuration } from '../util.js';
+import { getRandomInt, getRandElemFromArray, getRandomDuration } from '../utils/random.js';
 import { GENRES } from '../constants.js';
 
 // ---------------------------------------------------------

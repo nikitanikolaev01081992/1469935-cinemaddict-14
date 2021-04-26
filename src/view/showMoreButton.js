@@ -1,4 +1,4 @@
-import { createElementFromTemplate } from '../util.js';
+import ComponentView from './abstract-component.js';
 
 // ---------------------------------------------------------
 export const getShowMoreTemplate = () => {
@@ -8,21 +8,33 @@ export const getShowMoreTemplate = () => {
 };
 
 // ---------------------------------------------------------
-export default class ShowMore {
+export default class ShowMore extends ComponentView {
+  constructor() {
+    super();
+
+    this._callback = {};
+    this._clickHandler = this._clickHandler.bind(this);
+  }
+
   getTemplate() {
     return getShowMoreTemplate();
   }
 
-  getElement() {
-    if (!this._element) {
-      this._element = createElementFromTemplate(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
   removeElement() {
     this._element.remove();
-    this._element = null;
+    super.removeElement();
+  }
+
+  _clickHandler(evt) {
+    this._callback.click(evt);
+  }
+
+  setClickHandler(callback) {
+    this._callback.click = callback;
+    this.getElement().addEventListener('click', this._clickHandler);
+  }
+
+  removeClickHandler() {
+    this.getElement().removeEventListener('click', this._clickHandler);
   }
 }

@@ -1,4 +1,4 @@
-import { createElementFromTemplate } from '../util.js';
+import ComponentView from './abstract-component.js';
 
 // ---------------------------------------------------------
 export const getRatingTemplate = (rank) => {
@@ -9,24 +9,13 @@ export const getRatingTemplate = (rank) => {
 };
 
 // ---------------------------------------------------------
-export default class Rating {
+export default class Rating extends ComponentView {
   constructor(rank) {
+    super();
     this._rank = rank;
   }
 
   getTemplate() {
     return getRatingTemplate(this._rank);
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElementFromTemplate(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }

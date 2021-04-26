@@ -1,10 +1,12 @@
-import { createElementFromTemplate, capitalizeFirstLetter, getNode } from '../util.js';
-import CommentView from './comment.js';
+import ComponentView from './abstract-component.js';
+import { capitalizeFirstLetter } from '../utils/common.js';
 
+// ---------------------------------------------------------
 const getGenreTemplate = (genre) => {
   return `<span class="film-details__genre">${genre}</span>`;
 };
 
+// ---------------------------------------------------------
 export const getFilmDetailsTemplate = (data) => {
   const {
     filmId,
@@ -143,8 +145,9 @@ export const getFilmDetailsTemplate = (data) => {
 };
 
 // ---------------------------------------------------------
-export default class FilmDetails {
+export default class FilmDetails extends ComponentView {
   constructor(data) {
+    super();
     this._data = data;
   }
 
@@ -152,21 +155,8 @@ export default class FilmDetails {
     return getFilmDetailsTemplate(this._data);
   }
 
-  getElement() {
-    if (!this._element) {
-      this._element = createElementFromTemplate(this.getTemplate());
-
-      const commentList = getNode('.film-details__comments-list', this._element);
-      this._data.comments.forEach((comment) => {
-        commentList.append(new CommentView(comment).getElement());
-      });
-    }
-
-    return this._element;
-  }
-
   removeElement() {
     this._element.remove();
-    this._element = null;
+    super.removeElement();
   }
 }

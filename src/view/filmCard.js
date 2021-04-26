@@ -1,4 +1,5 @@
-import { createElementFromTemplate, capitalizeFirstLetter } from '../util.js';
+import ComponentView from './abstract-component.js';
+import { capitalizeFirstLetter } from '../utils/common.js';
 
 // ---------------------------------------------------------
 export const getFilmCardTemplate = (data) => {
@@ -24,24 +25,13 @@ export const getFilmCardTemplate = (data) => {
 };
 
 // ---------------------------------------------------------
-export default class FilmCard {
+export default class FilmCard extends ComponentView {
   constructor(data) {
+    super();
     this._data = data;
   }
 
   getTemplate() {
     return getFilmCardTemplate(this._data);
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElementFromTemplate(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }

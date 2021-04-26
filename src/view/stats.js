@@ -1,4 +1,5 @@
-import { createElementFromTemplate, capitalizeFirstLetter } from '../util.js';
+import ComponentView from './abstract-component.js';
+import { capitalizeFirstLetter } from '../utils/common.js';
 
 // ---------------------------------------------------------
 const getRankStats = (rank = '') => {
@@ -69,24 +70,13 @@ export const getStatsTemplate = (stats) => {
 };
 
 // ---------------------------------------------------------
-export default class Stats {
+export default class Stats extends ComponentView {
   constructor(stats) {
+    super();
     this._stats = stats;
   }
 
   getTemplate() {
     return getStatsTemplate(this._stats);
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElementFromTemplate(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }
