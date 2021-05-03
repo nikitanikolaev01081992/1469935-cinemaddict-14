@@ -49,6 +49,19 @@ const createElementFromTemplate = (template) => {
 };
 
 // ---------------------------------------------------------
+const replaceElement = (oldElement, newElement) => {
+  if (oldElement instanceof ComponentView) {
+    oldElement = oldElement.getElement();
+  }
+
+  if (newElement instanceof ComponentView) {
+    newElement = newElement.getElement();
+  }
+
+  oldElement.replaceWith(newElement);
+};
+
+// ---------------------------------------------------------
 // EXPORTS
 
 // prettier-ignore
@@ -56,5 +69,6 @@ export {
   RenderPosition,
   renderElement,
   renderElements,
-  createElementFromTemplate
+  createElementFromTemplate,
+  replaceElement
 };
