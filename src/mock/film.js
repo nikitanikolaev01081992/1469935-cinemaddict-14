@@ -137,6 +137,7 @@ export const generateFilm = (filmId = 0) => {
 
   return {
     filmId,
+    date,
     poster: `./images/posters/${filmToPosterMap[name]}`,
     name,
     rating: getRandomFloat(0, 10, 1),

@@ -17,6 +17,12 @@ const FilmListTitle = {
   MOST_COMMENTED: 'Most commented',
 };
 
+const SortType = {
+  DEFAULT: 'default',
+  DATE_DOWN: 'dateDown',
+  RATING_DOWN: 'ratingDown',
+};
+
 // ---------------------------------------------------------
 // EXPORTS
-export { CSS_HIDDEN_CLASS, CSS_HIDE_OVERFLOW_CLASS, CSS_FILMS_CONTAINER_CLASS, FilmListTitle, MINUTES_IN_HOUR, GENRES };
+export { CSS_HIDDEN_CLASS, CSS_HIDE_OVERFLOW_CLASS, CSS_FILMS_CONTAINER_CLASS, FilmListTitle, MINUTES_IN_HOUR, GENRES, SortType };

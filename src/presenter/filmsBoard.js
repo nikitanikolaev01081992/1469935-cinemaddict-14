@@ -1,7 +1,7 @@
-import { CSS_FILMS_CONTAINER_CLASS } from '../constants.js';
+import { CSS_FILMS_CONTAINER_CLASS, SortType } from '../constants.js';
 import { RenderPosition, renderElement, renderElements } from '../utils/render.js';
 import { getNode, removeNode } from '../utils/nodes.js';
-import { sortArrayOfObjects, updateFilm } from '../utils/common.js';
+import { sortArrayOfObjects, sortFilmsByDateDown, sortFilmsByRatingDown, updateFilm, removePresenter } from '../utils/common.js';
 
 import FilmListView from '../view/filmsList.js';
 import EmptyFilmListView from '../view/emptyFilmList.js';
@@ -46,9 +46,12 @@ export default class FilmsBoard {
     this._createPresenters();
 
     this._createComponents();
+
+    this._sortMode = SortType.DEFAULT;
   }
 
   init(films) {
+    this._initialFilms = films.slice();
     this._films = films.slice();
     this._topRatedFilms = sortArrayOfObjects(this._films, 'rating');
     this._mostCommentedFilms = sortArrayOfObjects(this._films, 'commentNumber');
@@ -63,7 +66,9 @@ export default class FilmsBoard {
 
   _createComponents() {
     this._menuComponent = new MenuView();
+
     this._sortComponent = new SortView();
+    this._sortComponent.setClickHandler(this._handleSortTypeChange);
 
     this._allFilmListComponent = new FilmListView();
     this._topRatedFilmListComponent = new FilmListView(true, 'TOP_RATED');
@@ -73,9 +78,41 @@ export default class FilmsBoard {
   }
 
   _bindHandlers() {
+    this._handleSortTypeChange = this._handleSortTypeChange.bind(this);
     this._handleFilmChange = this._handleFilmChange.bind(this);
     this._handleFilmListClick = this._handleFilmListClick.bind(this);
     this._handleShowMoreButtonClick = this._handleShowMoreButtonClick.bind(this);
+  }
+
+  _handleSortTypeChange(sortType) {
+    if (this._sortMode === sortType) {
+      return;
+    }
+
+    this._sortMode = sortType;
+
+    switch (sortType) {
+      case SortType.DATE_DOWN:
+        this._films = sortFilmsByDateDown(this._initialFilms);
+        break;
+      case SortType.RATING_DOWN:
+        this._films = sortFilmsByRatingDown(this._initialFilms);
+        break;
+      default:
+        this._films = this._initialFilms.slice();
+    }
+
+    // очистим список фильмов перед рендеров сортированного списка
+    this._clearFilms();
+    removeNode(this._showMoreButtonComponent);
+
+    // отрендерить основной список фильмов
+    this._renderedFilmsCount = FILM_COUNT_PER_STEP;
+    this._renderAllFilms(0, Math.min(this._films.length, FILM_COUNT_PER_STEP));
+
+    if (this._films.length > FILM_COUNT_PER_STEP) {
+      this._renderShowMoreButton();
+    }
   }
 
   _handleFilmChange(changedFilm) {
@@ -175,6 +212,28 @@ export default class FilmsBoard {
     filmPresenter.init(film);
   }
 
+  _clearFilms() {
+    this._films.forEach((film) => this._clearFilm(film));
+  }
+
+  _clearFilm(film) {
+    // нет презентера для такого фильма либо фильм не отрендерен
+    if (this._filmsPresenters[film.filmId] === undefined) {
+      return;
+    }
+
+    const filmsContainer = getNode(`.${CSS_FILMS_CONTAINER_CLASS}`, this._allFilmListComponent);
+
+    for (const presenter of this._filmsPresenters[film.filmId]) {
+      // только для фильмов в главном списке
+      if (presenter.getComponent() !== null && filmsContainer.contains(presenter.getComponent().getElement())) {
+        presenter.destroy();
+        this._filmsPresenters[film.filmId] = removePresenter(this._filmsPresenters[film.filmId], presenter);
+        break;
+      }
+    }
+  }
+
   _renderEmptyFilmList() {
     this._emltyFilmListComponent = new EmptyFilmListView();
     renderElement(this._filmListsContainer, this._emltyFilmListComponent);
@@ -195,7 +254,7 @@ export default class FilmsBoard {
   }
 
   _renderShowMoreButton() {
-    renderElement(this._filmListsContainer, this._showMoreButtonComponent);
+    renderElement(this._allFilmListComponent, this._showMoreButtonComponent);
     this._showMoreButtonComponent.setClickHandler(this._handleShowMoreButtonClick);
   }
 
