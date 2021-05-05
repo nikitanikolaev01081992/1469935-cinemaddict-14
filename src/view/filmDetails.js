@@ -1,5 +1,7 @@
 import ComponentView from './abstract-component.js';
 import { capitalizeFirstLetter } from '../utils/common.js';
+import { createElementFromTemplate } from '../utils/render.js';
+import { getNode } from '../utils/nodes.js';
 
 // ---------------------------------------------------------
 const getGenreTemplate = (genre) => {
@@ -149,14 +151,63 @@ export default class FilmDetails extends ComponentView {
   constructor(data) {
     super();
     this._data = data;
+    this._callbacks = {};
+    this._element = createElementFromTemplate(this.getTemplate());
+
+    this._handleClick = this._handleClick.bind(this);
+    this._handleClose = this._handleClose.bind(this);
   }
 
   getTemplate() {
     return getFilmDetailsTemplate(this._data);
   }
 
-  removeElement() {
-    this._element.remove();
-    super.removeElement();
+  _handleClick(evt) {
+    evt.preventDefault();
+    this._callbacks.click(evt);
+  }
+
+  setClickHandler(callback) {
+    this._callbacks.click = callback;
+
+    // если метод был вызван до рендера карточки фильма
+    if (this._element === null) {
+      this.getElement();
+    }
+
+    this._element.addEventListener('click', this._handleClick);
+  }
+
+  _handleClose(evt) {
+    evt.preventDefault();
+
+    this._callbacks.close(evt);
+  }
+
+  setCloseHandler(callback) {
+    this._callbacks.close = callback;
+
+    const popupFilmCloseButton = getNode('.film-details__close-btn', this._element);
+
+    const onCloseButtonClick = (evt) => {
+      removeHandlers();
+      this._handleClose(evt);
+    };
+
+    const onEscKeyDown = (evt) => {
+      if (evt.key !== 'Escape') {
+        return;
+      }
+      removeHandlers();
+      this._handleClose(evt);
+    };
+
+    const removeHandlers = () => {
+      popupFilmCloseButton.removeEventListener('click', onCloseButtonClick);
+      document.removeEventListener('keydown', onEscKeyDown);
+    };
+
+    popupFilmCloseButton.addEventListener('click', onCloseButtonClick);
+    document.addEventListener('keydown', onEscKeyDown);
   }
 }

@@ -29,9 +29,28 @@ export default class FilmCard extends ComponentView {
   constructor(data) {
     super();
     this._data = data;
+    this._callbacks = {};
+
+    this._handleClick = this._handleClick.bind(this);
   }
 
   getTemplate() {
     return getFilmCardTemplate(this._data);
+  }
+
+  _handleClick(evt) {
+    evt.preventDefault();
+    this._callbacks.click(evt);
+  }
+
+  setClickHandler(callback) {
+    this._callbacks.click = callback;
+
+    // если метод был вызван до рендера карточки фильма
+    if (this._element === null) {
+      this.getElement();
+    }
+
+    this._element.addEventListener('click', this._handleClick);
   }
 }

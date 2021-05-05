@@ -154,10 +154,8 @@ export const generateFilm = (filmId = 0) => {
     fullDescription: description,
     ageLimit: getRandElemFromArray(AGE_LIMITS),
     comments,
-    userDetails: {
-      isInWatchlist: Boolean(getRandomInt(0, 1)),
-      isInHistory: Boolean(getRandomInt(0, 1)),
-      isInFavourite: Boolean(getRandomInt(0, 1)),
-    },
+    isInWatchlist: Boolean(getRandomInt(0, 1)),
+    isInHistory: Boolean(getRandomInt(0, 1)),
+    isInFavourite: Boolean(getRandomInt(0, 1)),
   };
 };

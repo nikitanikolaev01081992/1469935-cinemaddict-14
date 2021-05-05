@@ -30,10 +30,23 @@ const getNode = (selector, parent = document) => getResultByDomFunc(selector, pa
 const getNodes = (selector, parent = document) => getResultByDomFunc(selector, parent, 'getNodes', 'querySelectorAll');
 
 // ---------------------------------------------------------
+// функция удаляет html элемент или component из DOM
+const removeNode = (node) => {
+  let elem = node;
+
+  if (elem instanceof ComponentView) {
+    elem = elem.getElement();
+    node.removeElement();
+  }
+
+  elem.remove();
+};
+// ---------------------------------------------------------
 // EXPORTS
 
 // prettier-ignore
 export {
   getNode,
-  getNodes
+  getNodes,
+  removeNode
 };

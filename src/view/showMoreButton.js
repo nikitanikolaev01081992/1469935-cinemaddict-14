@@ -26,6 +26,7 @@ export default class ShowMore extends ComponentView {
   }
 
   _clickHandler(evt) {
+    evt.preventDefault();
     this._callback.click(evt);
   }
 
