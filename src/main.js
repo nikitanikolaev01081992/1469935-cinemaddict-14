@@ -3,8 +3,8 @@ import { getNode } from './utils/nodes.js';
 
 import RatingView from './view/rating.js';
 // import StatsView from './view/stats.js';
-import TotalFilmsNumView from './view/totalFilmsNum.js';
-import FilmsBoardPresenter from './presenter/filmsBoard.js';
+import TotalFilmsNumView from './view/total-films-num.js';
+import FilmsBoardPresenter from './presenter/films-board.js';
 
 import { generateFilm } from './mock/film.js';
 import { generateUserStats } from './mock/stats.js';
@@ -32,12 +32,12 @@ const footerStatsNode = getNode('.footer__statistics');
 const bodyNode = getNode('body');
 
 // ---------------------------------------------------------
-const presenter = new FilmsBoardPresenter(bodyNode);
 
 // рейтинг пользователя
 renderElement(headerNode, new RatingView(userStats.rank));
 
 // фильмы с сортировкой и фильтрацией
+const presenter = new FilmsBoardPresenter(bodyNode);
 presenter.init(filmsData);
 
 // общее количество фильмов

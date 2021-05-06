@@ -2,7 +2,7 @@ import { CSS_HIDE_OVERFLOW_CLASS } from '../constants.js';
 import { renderElement, renderElements, replaceElement } from '../utils/render.js';
 import { getNode, removeNode } from '../utils/nodes.js';
 
-import FilmDetailsView from '../view/filmDetails.js';
+import FilmDetailsView from '../view/film-details.js';
 import CommentView from '../view/comment.js';
 
 export default class FilmDetails {

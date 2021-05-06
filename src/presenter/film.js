@@ -1,6 +1,6 @@
 import { renderElement, replaceElement } from '../utils/render.js';
 
-import FilmCardView from '../view/filmCard.js';
+import FilmCardView from '../view/film-card.js';
 
 export default class Film {
   constructor(filmContainer, changeData) {

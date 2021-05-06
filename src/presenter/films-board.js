@@ -3,16 +3,16 @@ import { RenderPosition, renderElement, renderElements } from '../utils/render.j
 import { getNode, removeNode } from '../utils/nodes.js';
 import { sortArrayOfObjects, sortFilmsByDateDown, sortFilmsByRatingDown, updateFilm, removePresenter } from '../utils/common.js';
 
-import FilmListView from '../view/filmsList.js';
-import EmptyFilmListView from '../view/emptyFilmList.js';
+import FilmListView from '../view/films-list.js';
+import EmptyFilmListView from '../view/empty-film-list.js';
 
-import ShowMoreView from '../view/showMoreButton.js';
+import ShowMoreView from '../view/show-more.js';
 import MenuView from '../view/menu.js';
 import FilterView from '../view/filter.js';
 import SortView from '../view/sort.js';
 
 import FilmPresenter from './film.js';
-import FilmDetailsPresenter from './filmDetails.js';
+import FilmDetailsPresenter from './film-details.js';
 
 // ---------------------------------------------------------
 // CONSTANTS
