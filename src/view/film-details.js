@@ -1,3 +1,4 @@
+import { CSS_HIDE_OVERFLOW_CLASS } from '../constants.js';
 import SmartView from './smart.js';
 import { capitalizeFirstLetter, parseDateObject, parseDuration } from '../utils/common.js';
 import { getNode } from '../utils/nodes.js';
@@ -158,32 +159,55 @@ export default class FilmDetails extends SmartView {
     this._callbacks = {};
     this._element = this.getElement();
 
-    this._handleClick = this._handleClick.bind(this);
+    this._handleControlsClick = this._handleControlsClick.bind(this);
     this._handleCloseButtonClick = this._handleCloseButtonClick.bind(this);
     this._handleEscKeyDown = this._handleEscKeyDown.bind(this);
     this._handleEmojiClick = this._handleEmojiClick.bind(this);
     this._handleCommentInput = this._handleCommentInput.bind(this);
 
     this._setCommentHandler();
+
+    this._removeScrollFromContainer();
   }
 
   getTemplate() {
     return getFilmDetailsTemplate(this._state);
   }
 
-  _handleClick(evt) {
+  _handleControlsClick(evt) {
     evt.preventDefault();
-    this._callbacks.click(evt);
+
+    const target = evt.target;
+
+    if (!target.matches('.film-details__control-label')) {
+      return;
+    }
+
+    let propertyToChange;
+    if (target.classList.contains('film-details__control-label--watchlist')) {
+      propertyToChange = 'isInWatchlist';
+    } else if (target.classList.contains('film-details__control-label--watched')) {
+      propertyToChange = 'isInHistory';
+    } else if (target.classList.contains('film-details__control-label--favorite')) {
+      propertyToChange = 'isInFavourite';
+    }
+
+    const newData = { [propertyToChange]: !this._state[propertyToChange] };
+    this.updateData(newData, true);
+    this._callbacks.controlClick(newData);
   }
 
-  setClickHandler(callback) {
-    this._callbacks.click = callback;
-    this._element.addEventListener('click', this._handleClick);
+  setControlsClickHandler(callback) {
+    this._callbacks.controlClick = callback;
+    this._element.addEventListener('click', this._handleControlsClick);
   }
 
   _handleCloseButtonClick(evt) {
     evt.preventDefault();
     this._removeCloseHandlers();
+
+    this._addScrollToContainer();
+
     this._callbacks.close(evt);
   }
 
@@ -192,7 +216,20 @@ export default class FilmDetails extends SmartView {
       return;
     }
     this._removeCloseHandlers();
+
+    this._addScrollToContainer();
+
     this._callbacks.close(evt);
+  }
+
+  _removeScrollFromContainer() {
+    // уберём полосу прокрутки у body
+    getNode('body').classList.add(CSS_HIDE_OVERFLOW_CLASS);
+  }
+
+  _addScrollToContainer() {
+    // вернём полосу прокрутки у body обратно
+    getNode('body').classList.remove(CSS_HIDE_OVERFLOW_CLASS);
   }
 
   setCloseHandlers(callback) {
@@ -269,7 +306,7 @@ export default class FilmDetails extends SmartView {
   }
 
   restoreHandlers() {
-    this.setClickHandler(this._callbacks.click);
+    this.setControlsClickHandler(this._callbacks.controlClick);
     this.setCloseHandlers(this._callbacks.close);
     this.setEmojiClickHandler(this._callbacks.emojiClick);
     this._setCommentHandler();

@@ -1,4 +1,3 @@
-import { CSS_HIDE_OVERFLOW_CLASS } from '../constants.js';
 import { renderElement, renderElements, replaceElement } from '../utils/render.js';
 import { getNode, removeNode } from '../utils/nodes.js';
 
@@ -21,7 +20,7 @@ export default class FilmDetails {
 
     const oldFilmDetailsComponent = this._filmDetailsComponent;
     this._filmDetailsComponent = new FilmDetailsView(this._film);
-    this._filmDetailsComponent.setClickHandler(this._handleControlsClick);
+    this._filmDetailsComponent.setControlsClickHandler(this._handleControlsClick);
     this._filmDetailsComponent.setCloseHandlers(this._handleClose);
     this._filmDetailsComponent.setEmojiClickHandler(this._handleEmojiClick);
 
@@ -37,9 +36,6 @@ export default class FilmDetails {
 
     // рендерим комментарии к фильму
     this._renderComments();
-
-    // дет. информация отрендерена, надо убрать полосу прокрутки у body
-    this._container.classList.add(CSS_HIDE_OVERFLOW_CLASS);
   }
 
   _renderComments() {
@@ -52,28 +48,11 @@ export default class FilmDetails {
   _handleClose() {
     removeNode(this._filmDetailsComponent);
     this._filmDetailsComponent = null;
-
-    // вернём полосу прокрутки у body обратно
-    this._container.classList.remove(CSS_HIDE_OVERFLOW_CLASS);
   }
 
-  _handleControlsClick(evt) {
-    const target = evt.target;
-
-    if (!target.matches('.film-details__control-label')) {
-      return;
-    }
-
-    let propertyToChange;
-    if (target.classList.contains('film-details__control-label--watchlist')) {
-      propertyToChange = 'isInWatchlist';
-    } else if (target.classList.contains('film-details__control-label--watched')) {
-      propertyToChange = 'isInHistory';
-    } else if (target.classList.contains('film-details__control-label--favorite')) {
-      propertyToChange = 'isInFavourite';
-    }
-
-    this._changeData(Object.assign({}, this._film, { [propertyToChange]: !this._film[propertyToChange] }));
+  _handleControlsClick(newData) {
+    this._film = Object.assign({}, this._film, newData);
+    this._changeData(Object.assign({}, this._film));
   }
 
   _handleEmojiClick() {
