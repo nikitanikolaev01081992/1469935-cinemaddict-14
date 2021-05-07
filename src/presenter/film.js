@@ -1,6 +1,6 @@
 import { renderElement, replaceElement } from '../utils/render.js';
 
-import FilmCardView from '../view/filmCard.js';
+import FilmCardView from '../view/film-card.js';
 
 export default class Film {
   constructor(filmContainer, changeData) {
@@ -49,5 +49,15 @@ export default class Film {
     }
 
     this._changeData(Object.assign({}, this._film, { [propertyToChange]: !this._film[propertyToChange] }));
+  }
+
+  getComponent() {
+    return this._filmComponent;
+  }
+
+  destroy() {
+    this._filmComponent.getElement().remove();
+    this._filmComponent.removeElement();
+    this._filmComponent = null;
   }
 }
