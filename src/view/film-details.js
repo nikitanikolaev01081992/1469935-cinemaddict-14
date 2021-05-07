@@ -1,6 +1,5 @@
-import ComponentView from './abstract-component.js';
-import { capitalizeFirstLetter } from '../utils/common.js';
-import { createElementFromTemplate } from '../utils/render.js';
+import SmartView from './smart.js';
+import { capitalizeFirstLetter, parseDateObject, parseDuration } from '../utils/common.js';
 import { getNode } from '../utils/nodes.js';
 
 // ---------------------------------------------------------
@@ -12,6 +11,7 @@ const getGenreTemplate = (genre) => {
 export const getFilmDetailsTemplate = (data) => {
   const {
     filmId,
+    date,
     poster,
     ageLimit,
     name,
@@ -20,14 +20,16 @@ export const getFilmDetailsTemplate = (data) => {
     director,
     screenwriters,
     actors,
-    releaseDate,
     duration,
     country,
     genres,
     fullDescription,
     commentNumber,
+    emoji,
+    commentValue,
   } = data;
 
+  // prettier-ignore
   return `<section class="film-details" data-film-id="${filmId}">
     <form class="film-details__inner" action="" method="get">
       <div class="film-details__top-container">
@@ -68,11 +70,11 @@ export const getFilmDetailsTemplate = (data) => {
               </tr>
               <tr class="film-details__row">
                 <td class="film-details__term">Release Date</td>
-                <td class="film-details__cell">${releaseDate}</td>
+                <td class="film-details__cell">${parseDateObject(date)}</td>
               </tr>
               <tr class="film-details__row">
                 <td class="film-details__term">Runtime</td>
-                <td class="film-details__cell">${duration}</td>
+                <td class="film-details__cell">${parseDuration(duration)}</td>
               </tr>
               <tr class="film-details__row">
                 <td class="film-details__term">Country</td>
@@ -112,10 +114,12 @@ export const getFilmDetailsTemplate = (data) => {
           </ul>
 
           <div class="film-details__new-comment">
-            <div class="film-details__add-emoji-label"></div>
+            <div class="film-details__add-emoji-label">
+                ${!emoji ? '' : `<img src="./images/emoji/${emoji}.png" width="55" height="55" alt="emoji-${emoji}">`}
+            </div>
 
             <label class="film-details__comment-label">
-              <textarea class="film-details__comment-input" placeholder="Select reaction below and write comment here" name="comment"></textarea>
+              <textarea class="film-details__comment-input" placeholder="Select reaction below and write comment here" name="comment">${!commentValue ? '' : commentValue}</textarea>
             </label>
 
             <div class="film-details__emoji-list">
@@ -147,19 +151,24 @@ export const getFilmDetailsTemplate = (data) => {
 };
 
 // ---------------------------------------------------------
-export default class FilmDetails extends ComponentView {
-  constructor(data) {
+export default class FilmDetails extends SmartView {
+  constructor(film) {
     super();
-    this._data = data;
+    this._state = FilmDetails.parseFilmToState(film);
     this._callbacks = {};
-    this._element = createElementFromTemplate(this.getTemplate());
+    this._element = this.getElement();
 
     this._handleClick = this._handleClick.bind(this);
-    this._handleClose = this._handleClose.bind(this);
+    this._handleCloseButtonClick = this._handleCloseButtonClick.bind(this);
+    this._handleEscKeyDown = this._handleEscKeyDown.bind(this);
+    this._handleEmojiClick = this._handleEmojiClick.bind(this);
+    this._handleCommentInput = this._handleCommentInput.bind(this);
+
+    this._setCommentHandler();
   }
 
   getTemplate() {
-    return getFilmDetailsTemplate(this._data);
+    return getFilmDetailsTemplate(this._state);
   }
 
   _handleClick(evt) {
@@ -169,45 +178,104 @@ export default class FilmDetails extends ComponentView {
 
   setClickHandler(callback) {
     this._callbacks.click = callback;
-
-    // если метод был вызван до рендера карточки фильма
-    if (this._element === null) {
-      this.getElement();
-    }
-
     this._element.addEventListener('click', this._handleClick);
   }
 
-  _handleClose(evt) {
+  _handleCloseButtonClick(evt) {
     evt.preventDefault();
-
+    this._removeCloseHandlers();
     this._callbacks.close(evt);
   }
 
-  setCloseHandler(callback) {
+  _handleEscKeyDown(evt) {
+    if (evt.key !== 'Escape') {
+      return;
+    }
+    this._removeCloseHandlers();
+    this._callbacks.close(evt);
+  }
+
+  setCloseHandlers(callback) {
     this._callbacks.close = callback;
 
     const popupFilmCloseButton = getNode('.film-details__close-btn', this._element);
 
-    const onCloseButtonClick = (evt) => {
-      removeHandlers();
-      this._handleClose(evt);
-    };
+    popupFilmCloseButton.addEventListener('click', this._handleCloseButtonClick);
+    document.addEventListener('keydown', this._handleEscKeyDown);
+  }
 
-    const onEscKeyDown = (evt) => {
-      if (evt.key !== 'Escape') {
-        return;
-      }
-      removeHandlers();
-      this._handleClose(evt);
-    };
+  _handleEmojiClick(evt) {
+    const target = evt.target.closest('.film-details__emoji-label');
+    if (!target) {
+      return;
+    }
 
-    const removeHandlers = () => {
-      popupFilmCloseButton.removeEventListener('click', onCloseButtonClick);
-      document.removeEventListener('keydown', onEscKeyDown);
-    };
+    const inputId = target.getAttribute('for');
+    const targetValue = getNode(`#${inputId}`, this._element).value;
 
-    popupFilmCloseButton.addEventListener('click', onCloseButtonClick);
-    document.addEventListener('keydown', onEscKeyDown);
+    // значение старое, ничего делать не надо
+    if (this._state.emoji === targetValue) {
+      return;
+    }
+
+    // элемент будет пересоздан, надо убрать старые хендлеры
+    this._removeCloseHandlers();
+
+    this.updateData({ emoji: targetValue });
+
+    this._callbacks.emojiClick();
+  }
+
+  setEmojiClickHandler(callback) {
+    this._callbacks.emojiClick = callback;
+    getNode('.film-details__emoji-list', this._element).addEventListener('click', this._handleEmojiClick);
+  }
+
+  _handleCommentInput(evt) {
+    evt.preventDefault();
+    this.updateData({ commentValue: evt.target.value }, true);
+  }
+
+  _setCommentHandler() {
+    getNode('.film-details__comment-input', this._element).addEventListener('change', this._handleCommentInput);
+  }
+
+  updateElement() {
+    const prevElement = this._element;
+    const prevElementScrollTop = prevElement.scrollTop;
+
+    this.removeElement();
+
+    const newElement = this.getElement();
+
+    prevElement.replaceWith(newElement);
+
+    // это надо сделать после всех оперций, чтобы успели отрендериться комментарии
+    setTimeout(() => {
+      newElement.scrollTop = prevElementScrollTop;
+    }, 0);
+
+    // надо заполнить значение скрытого поля ввода
+    getNode(`#emoji-${this._state.emoji}`, this.getElement()).setAttribute('checked', true);
+
+    // надо восстановить обработчики, т.к. был создан новый элемент
+    this.restoreHandlers();
+  }
+
+  _removeCloseHandlers() {
+    getNode('.film-details__close-btn', this._element).removeEventListener('click', this._handleCloseButtonClick);
+    document.removeEventListener('keydown', this._handleEscKeyDown);
+    getNode('.film-details__emoji-list', this._element).addEventListener('click', this._handleEmojiClick);
+  }
+
+  restoreHandlers() {
+    this.setClickHandler(this._callbacks.click);
+    this.setCloseHandlers(this._callbacks.close);
+    this.setEmojiClickHandler(this._callbacks.emojiClick);
+    this._setCommentHandler();
+  }
+
+  static parseFilmToState(film) {
+    return Object.assign({}, film, { emoji: null });
   }
 }

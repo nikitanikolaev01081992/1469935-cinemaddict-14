@@ -1,5 +1,5 @@
 import ComponentView from './abstract-component.js';
-import { capitalizeFirstLetter } from '../utils/common.js';
+import { capitalizeFirstLetter, parseDuration } from '../utils/common.js';
 
 // ---------------------------------------------------------
 export const getFilmCardTemplate = (data) => {
@@ -10,7 +10,7 @@ export const getFilmCardTemplate = (data) => {
     <p class="film-card__rating">${rating}</p>
     <p class="film-card__info">
       <span class="film-card__year">${year}</span>
-      <span class="film-card__duration">${duration}</span>
+      <span class="film-card__duration">${parseDuration(duration)}</span>
       <span class="film-card__genre">${genres.join(', ')}</span>
     </p>
     <img src="./${poster}" alt="" class="film-card__poster">

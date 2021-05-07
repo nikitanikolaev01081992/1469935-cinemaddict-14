@@ -1,4 +1,5 @@
 import ComponentView from './abstract-component.js';
+import { parseDateObject } from '../utils/common.js';
 
 // ---------------------------------------------------------
 export const getCommentTemplate = (data) => {
@@ -12,7 +13,7 @@ export const getCommentTemplate = (data) => {
       <p class="film-details__comment-text">${text}</p>
       <p class="film-details__comment-info">
         <span class="film-details__comment-author">${author}</span>
-        <span class="film-details__comment-day">${date}</span>
+        <span class="film-details__comment-day">${parseDateObject(date, 'YYYY/MM/DD HH:mm')}</span>
         <button class="film-details__comment-delete">Delete</button>
       </p>
     </div>

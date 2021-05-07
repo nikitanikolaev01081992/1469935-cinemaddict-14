@@ -3,8 +3,7 @@ import {
   getRandomInt,
   getRandomFloat,
   getRandElemFromArray,
-  getRandArrayFromValues,
-  getRandomDuration
+  getRandArrayFromValues
 } from '../utils/random.js';
 
 import { GENRES } from '../constants.js';
@@ -60,8 +59,6 @@ const ACTORS = [
   'Halle Berry',
   'Julia Roberts',
 ];
-
-const MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
 
 const COUNTRIES = [
   'Afghanistan',
@@ -133,8 +130,6 @@ export const generateFilm = (filmId = 0) => {
   const commentNumber = getRandomInt(CommentNumber.MIN, CommentNumber.MAX);
   const comments = new Array(commentNumber).fill().map(generateComment);
 
-  const { hours, minutes } = getRandomDuration(Duration.MIN, Duration.MAX);
-
   return {
     filmId,
     date,
@@ -142,7 +137,7 @@ export const generateFilm = (filmId = 0) => {
     name,
     rating: getRandomFloat(0, 10, 1),
     year: date.getFullYear(),
-    duration: `${hours}h${minutes > 0 ? ` ${minutes}m` : ''}`,
+    duration: getRandomInt(Duration.MIN, Duration.MAX),
     genres: getRandArrayFromValues(GENRES),
     shortDescription: description,
     commentNumber,
@@ -150,7 +145,6 @@ export const generateFilm = (filmId = 0) => {
     director: getRandElemFromArray(DIRECTORS),
     screenwriters: getRandArrayFromValues(SCREENWRITES),
     actors: getRandArrayFromValues(ACTORS),
-    releaseDate: `${date.getDate()} ${MONTHS[date.getMonth()]} ${date.getFullYear()}`,
     country: getRandElemFromArray(COUNTRIES),
     fullDescription: description,
     ageLimit: getRandElemFromArray(AGE_LIMITS),

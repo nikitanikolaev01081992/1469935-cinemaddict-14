@@ -1,4 +1,4 @@
-import { getRandomInt, getRandElemFromArray, getRandomDuration } from '../utils/random.js';
+import { getRandomInt, getRandElemFromArray } from '../utils/random.js';
 import { GENRES } from '../constants.js';
 
 // ---------------------------------------------------------
@@ -47,7 +47,7 @@ export const generateUserStats = () => {
   return {
     rank: getRank(watchedNumber),
     watchedNumber,
-    totalDuration: getRandomDuration(Duration.MIN, Duration.MAX),
+    totalDuration: getRandomInt(Duration.MIN, Duration.MAX),
     topGenre: getRandElemFromArray(GENRES),
   };
 };

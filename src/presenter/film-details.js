@@ -13,6 +13,7 @@ export default class FilmDetails {
 
     this._handleControlsClick = this._handleControlsClick.bind(this);
     this._handleClose = this._handleClose.bind(this);
+    this._handleEmojiClick = this._handleEmojiClick.bind(this);
   }
 
   init(film) {
@@ -21,7 +22,8 @@ export default class FilmDetails {
     const oldFilmDetailsComponent = this._filmDetailsComponent;
     this._filmDetailsComponent = new FilmDetailsView(this._film);
     this._filmDetailsComponent.setClickHandler(this._handleControlsClick);
-    this._filmDetailsComponent.setCloseHandler(this._handleClose);
+    this._filmDetailsComponent.setCloseHandlers(this._handleClose);
+    this._filmDetailsComponent.setEmojiClickHandler(this._handleEmojiClick);
 
     // детали фильма новые
     if (oldFilmDetailsComponent === null) {
@@ -72,5 +74,9 @@ export default class FilmDetails {
     }
 
     this._changeData(Object.assign({}, this._film, { [propertyToChange]: !this._film[propertyToChange] }));
+  }
+
+  _handleEmojiClick() {
+    this._renderComments();
   }
 }

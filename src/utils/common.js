@@ -1,3 +1,5 @@
+import dayjs from 'dayjs';
+
 // ---------------------------------------------------------
 // функция сортирует по убыванию копию входного массива объектов по заданному числовому свойству объекта
 const sortArrayOfObjects = (array, property) => {
@@ -30,6 +32,8 @@ const updateFilm = (films, updatedFilm) => {
   return [...films.slice(0, index), updatedFilm, ...films.slice(index + 1)];
 };
 
+// ---------------------------------------------------------
+// функция удаляет презентер и возвращает новый список презенторов
 const removePresenter = (presentersList, presenter) => {
   const index = presentersList.findIndex((item) => item === presenter);
 
@@ -41,6 +45,12 @@ const removePresenter = (presentersList, presenter) => {
 };
 
 // ---------------------------------------------------------
+const parseDuration = (minutes) => dayjs().startOf('date').set('minute', minutes).format('H[h] mm[m]');
+
+// ---------------------------------------------------------
+const parseDateObject = (date, format = 'DD MMMM YYYY') => dayjs(date).format(format);
+
+// ---------------------------------------------------------
 // EXPORTS
 
 // prettier-ignore
@@ -50,5 +60,7 @@ export {
   sortFilmsByRatingDown,
   capitalizeFirstLetter,
   updateFilm,
-  removePresenter
+  removePresenter,
+  parseDuration,
+  parseDateObject
 };
