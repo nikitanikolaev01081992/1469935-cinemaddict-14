@@ -24,19 +24,11 @@ const DATE = {
 const getRandDate = () => new Date(getRandomInt(DATE.MIN, DATE.MAX));
 
 // ---------------------------------------------------------
-const formatDateForComment = (date) => {
-  const [month, day, year] = date.toLocaleDateString('en-US').split('/');
-  const [hour, minute] = date.toLocaleTimeString('en-US').split(/:| /);
-
-  return `${year}/${month}/${day} ${hour}:${minute}`;
-};
-
-// ---------------------------------------------------------
 export const generateComment = () => {
   return {
     text: getRandElemFromArray(COMMENTS),
     emotion: getRandElemFromArray(EMOTIONS),
     author: getRandElemFromArray(AUTHORS),
-    date: formatDateForComment(getRandDate()),
+    date: getRandDate(),
   };
 };

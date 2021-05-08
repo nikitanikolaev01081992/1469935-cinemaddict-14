@@ -1,5 +1,3 @@
-import { MINUTES_IN_HOUR } from '../constants.js';
-
 // -----------------------------------------------------------------------
 const getRandomInt = (min, max) => {
   if (isNaN(min) || isNaN(min) || min < 0 || max < 0) {
@@ -50,19 +48,6 @@ const getRandArrayFromValues = (values, allowZeroLength = false) => {
 };
 
 // ---------------------------------------------------------
-// функция возвращает случайную продолжительность виде объекта с часами и минутами
-const getRandomDuration = (min, max) => {
-  const randomMiliseconds = getRandomInt(min, max);
-  const hours = Math.floor(randomMiliseconds / MINUTES_IN_HOUR);
-  const minutes = randomMiliseconds - hours * MINUTES_IN_HOUR;
-
-  return {
-    hours,
-    minutes,
-  };
-};
-
-// ---------------------------------------------------------
 // EXPORTS
 
 // prettier-ignore
@@ -70,6 +55,5 @@ export {
   getRandomInt,
   getRandomFloat,
   getRandElemFromArray,
-  getRandArrayFromValues,
-  getRandomDuration
+  getRandArrayFromValues
 };
