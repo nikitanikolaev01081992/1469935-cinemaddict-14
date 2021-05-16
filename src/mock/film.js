@@ -128,7 +128,7 @@ export const generateFilm = (filmId = 0) => {
     .join('');
 
   const commentNumber = getRandomInt(CommentNumber.MIN, CommentNumber.MAX);
-  const comments = new Array(commentNumber).fill().map(generateComment);
+  const comments = new Array(commentNumber).fill().map((_, index) => ({ filmId, ...generateComment(filmId, index) }));
 
   return {
     filmId,

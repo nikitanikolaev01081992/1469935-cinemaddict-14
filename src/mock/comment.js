@@ -24,8 +24,9 @@ const DATE = {
 const getRandDate = () => new Date(getRandomInt(DATE.MIN, DATE.MAX));
 
 // ---------------------------------------------------------
-export const generateComment = () => {
+export const generateComment = (filmdId, index) => {
   return {
+    commentId: `${Date.now()}_${filmdId}_${index}`,
     text: getRandElemFromArray(COMMENTS),
     emotion: getRandElemFromArray(EMOTIONS),
     author: getRandElemFromArray(AUTHORS),

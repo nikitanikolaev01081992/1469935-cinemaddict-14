@@ -1,4 +1,4 @@
-import ComponentView from '../view/abstract-component';
+import ComponentView from '../view/abstract';
 
 // ---------------------------------------------------------
 
@@ -37,6 +37,10 @@ const removeNode = (node) => {
   if (elem instanceof ComponentView) {
     elem = elem.getElement();
     node.removeElement();
+  }
+
+  if (!elem) {
+    return; // такого элемента нет
   }
 
   elem.remove();

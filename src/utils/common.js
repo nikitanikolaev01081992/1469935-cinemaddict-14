@@ -1,6 +1,7 @@
 // комментарий для пулреквеста
 // эти изменения были сделаны в module6-task1
 import dayjs from 'dayjs';
+import { FilterType } from '../constants.js';
 
 // ---------------------------------------------------------
 // функция сортирует по убыванию копию входного массива объектов по заданному числовому свойству объекта
@@ -23,18 +24,6 @@ const sortFilmsByRatingDown = (films) => sortArrayOfObjects(films, 'rating');
 const capitalizeFirstLetter = (text) => text[0].toUpperCase() + text.slice(1);
 
 // ---------------------------------------------------------
-// функция возвращает новый массив фильмов с обновлённым элементом
-const updateFilm = (films, updatedFilm) => {
-  const index = films.findIndex((film) => film.filmId === updatedFilm.filmId);
-
-  if (index === -1) {
-    return films;
-  }
-
-  return [...films.slice(0, index), updatedFilm, ...films.slice(index + 1)];
-};
-
-// ---------------------------------------------------------
 // функция удаляет презентер и возвращает новый список презенторов
 const removePresenter = (presentersList, presenter) => {
   const index = presentersList.findIndex((item) => item === presenter);
@@ -53,6 +42,27 @@ const parseDuration = (minutes) => dayjs().startOf('date').set('minute', minutes
 const parseDateObject = (date, format = 'DD MMMM YYYY') => dayjs(date).format(format);
 
 // ---------------------------------------------------------
+const filterFilms = (films, filter) => {
+  let innerFilms = films.slice();
+  switch (filter) {
+    case FilterType.ALL:
+      innerFilms = innerFilms.slice();
+      break;
+    case FilterType.WATCHLIST:
+      innerFilms = innerFilms.filter((film) => film.isInWatchlist);
+      break;
+    case FilterType.HISTORY:
+      innerFilms = innerFilms.filter((film) => film.isInHistory);
+      break;
+    case FilterType.FAVOURITES:
+      innerFilms = innerFilms.filter((film) => film.isInFavourite);
+      break;
+  }
+
+  return innerFilms;
+};
+
+// ---------------------------------------------------------
 // EXPORTS
 
 // prettier-ignore
@@ -61,8 +71,8 @@ export {
   sortFilmsByDateDown,
   sortFilmsByRatingDown,
   capitalizeFirstLetter,
-  updateFilm,
   removePresenter,
   parseDuration,
-  parseDateObject
+  parseDateObject,
+  filterFilms
 };

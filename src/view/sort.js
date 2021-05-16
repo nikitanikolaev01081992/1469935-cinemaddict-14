@@ -1,5 +1,5 @@
 import { createElementFromTemplate } from '../utils/render.js';
-import ComponentView from './abstract-component.js';
+import ComponentView from './abstract.js';
 import { SortType } from '../constants.js';
 import { getNode } from '../utils/nodes.js';
 

@@ -1,4 +1,4 @@
-import ComponentView from '../view/abstract-component.js';
+import ComponentView from '../view/abstract.js';
 
 // -----------------------------------------------------------------------
 // CONSTANTS/ENUMS
