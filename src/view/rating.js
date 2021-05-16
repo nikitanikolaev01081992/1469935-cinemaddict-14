@@ -1,4 +1,4 @@
-import ComponentView from './abstract-component.js';
+import ComponentView from './abstract.js';
 
 // ---------------------------------------------------------
 export const getRatingTemplate = (rank) => {

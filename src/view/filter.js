@@ -1,10 +1,17 @@
-import ComponentView from './abstract-component.js';
+import ComponentView from './abstract.js';
 import { capitalizeFirstLetter } from '../utils/common.js';
+import { FilterType } from '../constants.js';
 
 // ---------------------------------------------------------
-const getFilterTemplate = ({ filterName, count }) => {
-  return `<a href="#watchlist" class="main-navigation__item">
-    ${capitalizeFirstLetter(filterName)} <span class="main-navigation__item-count">${count}</span></a>`;
+const getFilterTemplate = ({ filterType, isActive, count }) => {
+  return `<a
+            href="#${filterType}"
+            class="main-navigation__item ${isActive ? 'main-navigation__item--active' : ''}"
+            data-filter-type="${filterType}"
+          >
+            ${capitalizeFirstLetter(FilterType[filterType])}
+            ${FilterType[filterType] === FilterType.ALL ? '' : `<span class="main-navigation__item-count">${count}</span>`}
+          </a>`;
 };
 
 // ---------------------------------------------------------

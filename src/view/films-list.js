@@ -1,4 +1,4 @@
-import ComponentView from './abstract-component.js';
+import ComponentView from './abstract.js';
 import { FilmListTitle, CSS_HIDDEN_CLASS } from '../constants.js';
 
 // ---------------------------------------------------------

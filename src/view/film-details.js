@@ -28,6 +28,9 @@ export const getFilmDetailsTemplate = (data) => {
     commentNumber,
     emoji,
     commentValue,
+    isInWatchlist,
+    isInHistory,
+    isInFavourite,
   } = data;
 
   // prettier-ignore
@@ -96,13 +99,30 @@ export const getFilmDetailsTemplate = (data) => {
         </div>
 
         <section class="film-details__controls">
-          <input type="checkbox" class="film-details__control-input visually-hidden" id="watchlist" name="watchlist">
+          <input
+            type="checkbox"
+            class="film-details__control-input visually-hidden" id="watchlist"
+            name="watchlist"
+            ${isInWatchlist ? 'checked' : ''}
+          >
           <label for="watchlist" class="film-details__control-label film-details__control-label--watchlist">Add to watchlist</label>
 
-          <input type="checkbox" class="film-details__control-input visually-hidden" id="watched" name="watched">
+          <input
+            type="checkbox"
+            class="film-details__control-input visually-hidden"
+            id="watched"
+            name="watched"
+            ${isInHistory ? 'checked' : ''}
+          >
           <label for="watched" class="film-details__control-label film-details__control-label--watched">Already watched</label>
 
-          <input type="checkbox" class="film-details__control-input visually-hidden" id="favorite" name="favorite">
+          <input
+            type="checkbox"
+            class="film-details__control-input visually-hidden"
+            id="favorite"
+            name="favorite"
+            ${isInFavourite ? 'checked' : ''}
+          >
           <label for="favorite" class="film-details__control-label film-details__control-label--favorite">Add to favorites</label>
         </section>
       </div>
@@ -164,8 +184,9 @@ export default class FilmDetails extends SmartView {
     this._handleEscKeyDown = this._handleEscKeyDown.bind(this);
     this._handleEmojiClick = this._handleEmojiClick.bind(this);
     this._handleCommentInput = this._handleCommentInput.bind(this);
+    this._handleCommentSubmit = this._handleCommentSubmit.bind(this);
 
-    this._setCommentHandler();
+    this._setCommentInputHandler();
 
     this._removeScrollFromContainer();
   }
@@ -183,6 +204,8 @@ export default class FilmDetails extends SmartView {
       return;
     }
 
+    this._removeHandlers();
+
     let propertyToChange;
     if (target.classList.contains('film-details__control-label--watchlist')) {
       propertyToChange = 'isInWatchlist';
@@ -193,7 +216,6 @@ export default class FilmDetails extends SmartView {
     }
 
     const newData = { [propertyToChange]: !this._state[propertyToChange] };
-    this.updateData(newData, true);
     this._callbacks.controlClick(newData);
   }
 
@@ -204,7 +226,8 @@ export default class FilmDetails extends SmartView {
 
   _handleCloseButtonClick(evt) {
     evt.preventDefault();
-    this._removeCloseHandlers();
+
+    this._removeHandlers();
 
     this._addScrollToContainer();
 
@@ -215,7 +238,10 @@ export default class FilmDetails extends SmartView {
     if (evt.key !== 'Escape') {
       return;
     }
-    this._removeCloseHandlers();
+
+    evt.preventDefault();
+
+    this._removeHandlers();
 
     this._addScrollToContainer();
 
@@ -256,7 +282,7 @@ export default class FilmDetails extends SmartView {
     }
 
     // элемент будет пересоздан, надо убрать старые хендлеры
-    this._removeCloseHandlers();
+    this._removeHandlers();
 
     this.updateData({ emoji: targetValue });
 
@@ -273,43 +299,85 @@ export default class FilmDetails extends SmartView {
     this.updateData({ commentValue: evt.target.value }, true);
   }
 
-  _setCommentHandler() {
+  _setCommentInputHandler() {
     getNode('.film-details__comment-input', this._element).addEventListener('change', this._handleCommentInput);
   }
 
-  updateElement() {
+  _handleCommentSubmit(evt) {
+    if (!this._element.hasAttribute('data-film-id')) {
+      return;
+    }
+    if (!(evt.ctrlKey && evt.key === 'Enter') && !(evt.metaKey && evt.key === 'Enter')) {
+      return;
+    }
+    if (!this._state.emoji || !this._state.commentValue) {
+      return;
+    }
+
+    evt.preventDefault();
+
+    const filmId = Number(this._element.getAttribute('data-film-id'));
+
+    const comment = {
+      filmId,
+      emotion: this._state.emoji,
+      text: this._state.commentValue,
+    };
+
+    this.updateData({ emoji: '', commentValue: '' }, true);
+    this._callbacks.submit(comment);
+  }
+
+  setCommentSubmitHandler(callback) {
+    this._callbacks.submit = callback;
+    document.addEventListener('keydown', this._handleCommentSubmit);
+  }
+
+  updateElement(newFilm) {
     const prevElement = this._element;
     const prevElementScrollTop = prevElement.scrollTop;
 
     this.removeElement();
 
+    // новые данные от презентера
+    if (newFilm) {
+      this._state = Object.assign({}, this._state, newFilm);
+    }
+
+    // создаём новые элемент с текущим _state
     const newElement = this.getElement();
 
+    // заменяем старый элемент новым
     prevElement.replaceWith(newElement);
 
-    // это надо сделать после всех оперций, чтобы успели отрендериться комментарии
+    // это надо сделать после всех операций, чтобы успели отрендериться комментарии
     setTimeout(() => {
       newElement.scrollTop = prevElementScrollTop;
     }, 0);
 
     // надо заполнить значение скрытого поля ввода
-    getNode(`#emoji-${this._state.emoji}`, this.getElement()).setAttribute('checked', true);
+    if (this._state.emoji) {
+      getNode(`#emoji-${this._state.emoji}`, this.getElement()).setAttribute('checked', true);
+    }
 
     // надо восстановить обработчики, т.к. был создан новый элемент
     this.restoreHandlers();
   }
 
-  _removeCloseHandlers() {
+  _removeHandlers() {
+    this._element.removeEventListener('click', this._handleControlsClick);
     getNode('.film-details__close-btn', this._element).removeEventListener('click', this._handleCloseButtonClick);
     document.removeEventListener('keydown', this._handleEscKeyDown);
     getNode('.film-details__emoji-list', this._element).addEventListener('click', this._handleEmojiClick);
+    document.removeEventListener('keydown', this._handleCommentSubmit);
   }
 
   restoreHandlers() {
     this.setControlsClickHandler(this._callbacks.controlClick);
     this.setCloseHandlers(this._callbacks.close);
     this.setEmojiClickHandler(this._callbacks.emojiClick);
-    this._setCommentHandler();
+    this._setCommentInputHandler();
+    this.setCommentSubmitHandler(this._callbacks.submit);
   }
 
   static parseFilmToState(film) {

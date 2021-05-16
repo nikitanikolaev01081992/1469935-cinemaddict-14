@@ -17,6 +17,7 @@ const FilmListTitle = {
   MOST_COMMENTED: 'Most commented',
 };
 
+// ---------------------------------------------------------
 const SortType = {
   DEFAULT: 'default',
   DATE_DOWN: 'dateDown',
@@ -24,5 +25,39 @@ const SortType = {
 };
 
 // ---------------------------------------------------------
+const FilterType = {
+  ALL: 'all movies',
+  WATCHLIST: 'Watchlist',
+  HISTORY: 'History',
+  FAVOURITES: 'Favorites',
+};
+
+// ---------------------------------------------------------
+const ActionType = {
+  UPDATE_FILM: 'UPDATE_FILM',
+  ADD_COMMENT: 'ADD_COMMENT',
+  DELETE_COMMENT: 'DELETE_COMMENT',
+};
+
+// ---------------------------------------------------------
+const UpdateType = {
+  PATCH: 'patch',
+  MINOR: 'minor',
+  MAJOR: 'major',
+};
+
+// ---------------------------------------------------------
 // EXPORTS
-export { CSS_HIDDEN_CLASS, CSS_HIDE_OVERFLOW_CLASS, CSS_FILMS_CONTAINER_CLASS, FilmListTitle, MINUTES_IN_HOUR, GENRES, SortType };
+// prettier-ignore
+export {
+  CSS_HIDDEN_CLASS,
+  CSS_HIDE_OVERFLOW_CLASS,
+  CSS_FILMS_CONTAINER_CLASS,
+  FilmListTitle,
+  MINUTES_IN_HOUR,
+  GENRES,
+  SortType,
+  FilterType,
+  ActionType,
+  UpdateType
+};
